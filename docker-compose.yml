@@ -1,0 +1,15 @@
+version: "3.7"
+
+services:
+  myapitemplate:
+    build:
+      context: ./
+      dockerfile: release.Dockerfile
+    container_name: myapi-template
+    restart: always
+    env_file:
+      - app/dev.env
+    volumes:
+      - "./app:/app"
+    ports:
+      - "80:80"
