@@ -7,7 +7,6 @@ try:
 except Exception as e:
     print("Error some module are missing :{} ".format(e))
 
-
 class Parameters(object):
 
     def __init__(self):
@@ -17,7 +16,7 @@ class Parameters(object):
             "ApiName":"DownloadJobsProcess",
             "tag":"Jobs Download",
             "ApiDescription":"Download jobs based on process id",
-            "DataBaseRequired":True,
+            "python_library":["import os", "from enum import Enum",],
             "field":[
                 {
                     "name":"process_id",
@@ -47,11 +46,12 @@ class CodeGenerator(object):
         self.step1_generate_imports()
         self.step2_generate_schemas()
         self.step3_generate_controller()
-        self.step4_save_package()
+        print(self.code)
+        # self.step4_save_package()
 
     def step1_generate_imports(self):
-        if self.instance.data.get("DataBaseRequired"):
-            self.code += """
+
+        default_imports = """
 try:
     from flask import app,Flask, request
     from flask_restful import Resource, Api, reqparse
@@ -59,26 +59,16 @@ try:
     import os
     from marshmallow import Schema, fields
     from flask_apispec.views import MethodResource
-    from flask_apispec import marshal_with, doc, use_kwargs
-    from API.common.dbclass  import Database
+    from flask_apispec import marshal_with, doc, use_kwargs"""
+        if self.instance.data.get("python_library") is not []:
+            for imports_ in self.instance.data.get("python_library"):default_imports += """
+    {}""".format(imports_)
+        default_imports += """
     print("All Modules are loaded ...")
 except Exception as e:
     print("some modules are Missing ")
-            """
-        else:
-            self.code += """
-try:
-    from flask import app,Flask, request
-    from flask_restful import Resource, Api, reqparse
-    import json
-    import os
-    from marshmallow import Schema, fields
-    from flask_apispec.views import MethodResource
-    from flask_apispec import marshal_with, doc, use_kwargs
-    print("All Modules are loaded ...")
-except Exception as e:
-    print("some modules are Missing ")
-            """
+                """
+        self.code += default_imports
 
     def step2_generate_schemas(self):
 
@@ -86,13 +76,13 @@ except Exception as e:
         controller_schema_name = ""
 
         for x in CRUDEnum:
+
             if x.value == 2:
                 controller_schema_name = controller_name+"Put"+"Schema"
                 if self.instance.data.get("field") is not None:
                     if len(self.instance.data.get("field")):
                         class_name = """
-class {}(Schema):
-            """.format(controller_schema_name)
+class {}(Schema):""".format(controller_schema_name)
                         self.code += class_name
 
                         for feild in self.instance.data.get("field"):
@@ -110,10 +100,8 @@ class {}(Schema):
                 if self.instance.data.get("field") is not None:
                     if len(self.instance.data.get("field")):
                         class_name = """
-class {}(Schema):
-            """.format(controller_schema_name)
+class {}(Schema):""".format(controller_schema_name)
                         self.code += class_name
-
                         for feild in self.instance.data.get("field"):
                             if feild.get("type") == "String":
                                 _ = """
@@ -122,7 +110,6 @@ class {}(Schema):
                                                                   feild.get("description"),
                                                                   )
                                 self.code += _
-
                         self.code += "\n"
 
     def step3_generate_controller(self):
@@ -130,7 +117,6 @@ class {}(Schema):
         self.code += """
 class {}Controller(MethodResource, Resource):
         """.format(self.instance.data.get("ApiName"))
-
         controller_schema_name = ""
 
         for x in CRUDEnum:
@@ -189,12 +175,10 @@ class {}Controller(MethodResource, Resource):
                 if self.instance.data.get("field") is not None:
                     if len(self.instance.data.get("field")):
                         self.code += """
-    @use_kwargs({}, location=('json'))
-                        """.format(self.instance.data.get("ApiName")+"Put"+"Schema")
+    @use_kwargs({}, location=('json'))""".format(self.instance.data.get("ApiName")+"Put"+"Schema")
 
                 if self.instance.data.get("DataBaseRequired"):
-                    function_name = """            
-
+                    function_name = """
     def post (self, **kwargs):
         try:
             'Developer writes the code here '
@@ -220,7 +204,6 @@ class {}Controller(MethodResource, Resource):
 
                 else:
                     function_name = """    
-                            
     def post (self, **kwargs):
         try:
             'Developer writes the code here '
@@ -242,12 +225,10 @@ class {}Controller(MethodResource, Resource):
                 if self.instance.data.get("field") is not None:
                     if len(self.instance.data.get("field")):
                         self.code += """
-    @use_kwargs({}, location=('json'))
-                        """.format(self.instance.data.get("ApiName")+"Delete"+"Schema")
+    @use_kwargs({}, location=('json'))""".format(self.instance.data.get("ApiName")+"Delete"+"Schema")
 
                 if self.instance.data.get("DataBaseRequired"):
                     function_name = """
-
     def delete (self, **kwargs):
         try:
             'Developer writes the code here '
@@ -304,7 +285,6 @@ class {}Controller(MethodResource, Resource):
 
         except Exception as e:
             print("Directory exists ")
-
 
 def main():
     helper = Parameters()
