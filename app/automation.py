@@ -13,18 +13,11 @@ class Parameters(object):
 
         self.data = {
 
-            "ApiName":"DownloadJobsProcess",
-            "tag":"Jobs Download",
-            "ApiDescription":"Download jobs based on process id",
+            "ApiName":"Code Coverage",
+            "tag":"Code Coverage",
+            "ApiDescription":"Code Coverage",
             "python_library":["import os", "from enum import Enum",],
-            "field":[
-                {
-                    "name":"process_id",
-                    "type":"String",
-                    "required":True,
-                    "description":"Based on process ID it will download job "
-                },
-            ],
+            "field":[],
 
         }
 
@@ -47,7 +40,7 @@ class CodeGenerator(object):
         self.step2_generate_schemas()
         self.step3_generate_controller()
         print(self.code)
-        # self.step4_save_package()
+        self.step4_save_package()
 
     def step1_generate_imports(self):
 

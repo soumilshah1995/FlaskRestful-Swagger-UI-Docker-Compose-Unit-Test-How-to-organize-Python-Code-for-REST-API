@@ -9,6 +9,7 @@ try:
     from flask_apispec import marshal_with, doc, use_kwargs
 
     from API.ClusterHealth.views import HeathController
+    from API.CodeCoverageViews.views import CodeCoverageController
 
 except Exception as e:
     print("__init Modules are Missing {}".format(e))

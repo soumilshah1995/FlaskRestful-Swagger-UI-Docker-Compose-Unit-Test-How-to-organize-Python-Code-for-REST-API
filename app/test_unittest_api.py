@@ -3,10 +3,12 @@ try:
     import unittest
     import app
     import json
-    import requests
     from API import app
+    from dotenv import load_dotenv
     import os
+    import subprocess
 
+    print("test file ok...........")
 except Exception as e:
     print(e)
 
@@ -42,3 +44,30 @@ class FlaskTestCase(unittest.TestCase):
         response = tester.get("/health_check")
         statuscode = response.status_code
         self.assertEqual(statuscode, 200)
+
+    def test_health_response(self):
+        """
+        Check Whether Response is 200
+
+        """
+        tester = app.test_client(self)
+        response = tester.get("/health_check")
+        data = json.loads(response.get_data(as_text=True))
+        self.assertEqual(data.get("message"), "APi are working fine")
+
+    def test_code_coverage(self):
+
+        """
+        Check Whether Response is 200
+
+        """
+        print("\n")
+        print("\n")
+        import subprocess
+        subprocess.run(["coverage", "report"])
+        print("\n")
+        print("\n")
+
+
+if __name__ == "__main__":
+    unittest.main()
