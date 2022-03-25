@@ -4,7 +4,7 @@ load_dotenv()
 try:
     from API import (app,
                      api,
-                     HeathController,docs,CodeCoverageController
+                     HeathController,docs
 
                      )
 except Exception as e:
@@ -13,5 +13,3 @@ except Exception as e:
 api.add_resource(HeathController, '/health_check')
 docs.register(HeathController)
 
-api.add_resource(CodeCoverageController, '/code_coverage')
-docs.register(CodeCoverageController)
