@@ -21,4 +21,6 @@ class HeathController(MethodResource, Resource):
         '''
         Get method represents a GET API method
         '''
-        return {'message': 'APi are working fine'}, 200
+        _ = {'message': 'APi are working fine'}
+        print(str(_))
+        return _
